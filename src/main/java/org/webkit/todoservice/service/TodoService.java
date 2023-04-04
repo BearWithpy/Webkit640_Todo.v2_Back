@@ -29,11 +29,10 @@ public class TodoService {
         }
     }
 
-    public Optional<TodoEntity> create(final TodoEntity entity) {
+    public List<TodoEntity> create(final TodoEntity entity) {
         validate(entity);
-
         repository.save(entity);
-        return repository.findById(entity.getId());
+        return repository.findByUserId(entity.getUserId());
     }
 
     public List<TodoEntity> retrieve(final String userId) {
@@ -66,11 +65,11 @@ public class TodoService {
         return repository.findById(entity.getId());
     }
 
-    public String delete(final String id){
-        if(repository.existsById(id)) repository.deleteById(id);
+    public List<TodoEntity> delete(final TodoEntity entity){
+        if(repository.existsById(entity.getId())) repository.deleteById(entity.getId());
         else throw new RuntimeException("ID Doesn't EXIST!");
 
-        return "Deleted";
+        return repository.findByUserId(entity.getUserId());
     }
 
 
