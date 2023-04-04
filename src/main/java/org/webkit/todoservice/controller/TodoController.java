@@ -3,15 +3,12 @@ package org.webkit.todoservice.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import org.webkit.todoservice.domain.TodoEntity;
 import org.webkit.todoservice.dto.ResponseDTO;
 import org.webkit.todoservice.dto.TodoDTO;
 import org.webkit.todoservice.service.TodoService;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,10 +16,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("todo")
 @Slf4j
-public class TestController {
+public class TodoController {
 
     @Autowired
     private TodoService service;
+
+    String tempUserId = "temp-userId";
 
     @PostMapping
     public ResponseEntity<?> createTodo(@RequestBody TodoDTO dto){
@@ -32,7 +31,9 @@ public class TestController {
             TodoEntity entity = TodoDTO.toEntity(dto);
             log.info("Log: DTO to Entity");
 
-            entity.setUserId("temp-userId");
+            entity.setUserId(tempUserId);
+            System.out.println(entity.getUserId());
+            log.info("Log: set userID!");
 
             Optional<TodoEntity> entities = service.create(entity);
             log.info("Log: service.create OK!");
@@ -53,6 +54,18 @@ public class TestController {
 
             return ResponseEntity.badRequest().body(response);
         }
+
+    }
+
+    @GetMapping
+    public ResponseEntity<?> retrieveTodo(){
+
+        List<TodoEntity> entities = service.retrieve(tempUserId);
+        List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
+
+        ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
+
+        return ResponseEntity.ok().body(response);
 
     }
 
