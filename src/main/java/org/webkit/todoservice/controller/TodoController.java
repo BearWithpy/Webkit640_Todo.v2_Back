@@ -9,6 +9,7 @@ import org.webkit.todoservice.dto.ResponseDTO;
 import org.webkit.todoservice.dto.TodoDTO;
 import org.webkit.todoservice.service.TodoService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class TodoController {
     String tempUserId = "temp-userId";
 
     @PostMapping
-    public ResponseEntity<?> createTodo(@RequestBody TodoDTO dto){
+    public ResponseEntity<?> createTodo(@RequestBody TodoDTO dto) {
         try {
             log.info("Log: createTodo Start!");
 
@@ -47,8 +48,7 @@ public class TodoController {
             return ResponseEntity.ok().body(response);
 
 
-
-        }catch (Exception e){
+        } catch (Exception e) {
             String error = e.getMessage();
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().error(error).build();
 
@@ -58,7 +58,7 @@ public class TodoController {
     }
 
     @GetMapping
-    public ResponseEntity<?> retrieveTodo(){
+    public ResponseEntity<?> retrieveTodo() {
 
         List<TodoEntity> entities = service.retrieve(tempUserId);
         List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
@@ -70,8 +70,8 @@ public class TodoController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateTodo(@RequestBody TodoDTO dto){
-        try{
+    public ResponseEntity<?> updateTodo(@RequestBody TodoDTO dto) {
+        try {
             TodoEntity entity = TodoDTO.toEntity(dto);
 
             entity.setUserId(tempUserId);
@@ -82,15 +82,28 @@ public class TodoController {
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
             return ResponseEntity.ok().body(response);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             String error = e.getMessage();
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().error(error).build();
             return ResponseEntity.badRequest().body(response);
         }
     }
 
+    @DeleteMapping
+    public ResponseEntity<?> delete(@RequestBody TodoDTO dto) {
+        try {
+            List<String> message = new ArrayList<>();
+            String msg = service.delete(dto.getId());
+            message.add(msg);
 
-
+            ResponseDTO<String> response = ResponseDTO.<String>builder().data(message).build();
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            String error = e.getMessage();
+            ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().error(error).build();
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
 
 
 }
