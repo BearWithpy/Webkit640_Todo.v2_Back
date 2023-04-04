@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.webkit.todoservice.domain.TodoEntity;
 import org.webkit.todoservice.persistence.TodoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,7 +29,9 @@ public class TodoService {
         }
     }
 
+
     public Optional<TodoEntity> create(final TodoEntity entity){
+
         // validate(entity);
 
         repository.save(entity);
