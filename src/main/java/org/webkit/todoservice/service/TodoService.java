@@ -39,7 +39,7 @@ public class TodoService {
         return repository.findByUserId(userId);
     }
 
-    public Optional<TodoEntity> update(final TodoEntity entity) {
+    public List<TodoEntity> update(final TodoEntity entity) {
         validate(entity);
 
         if (repository.existsById(entity.getId())) {
@@ -48,7 +48,7 @@ public class TodoService {
             throw new RuntimeException("Unknown ID");
         }
 
-        return repository.findById(entity.getId());
+        return repository.findByUserId(entity.getUserId());
     }
 
     public Optional<TodoEntity> updateTodo(final TodoEntity entity) {

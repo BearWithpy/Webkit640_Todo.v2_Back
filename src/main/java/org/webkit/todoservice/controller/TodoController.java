@@ -58,9 +58,9 @@ public class TodoController {
     }
 
     @GetMapping
-    public ResponseEntity<?> retrieveTodo() {
+    public ResponseEntity<?> retrieveTodo(@AuthenticationPrincipal String userId) {
 
-        List<TodoEntity> entities = service.retrieve(tempUserId);
+        List<TodoEntity> entities = service.retrieve(userId);
         List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 
         ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
@@ -76,7 +76,9 @@ public class TodoController {
 
             entity.setUserId(userId);
 
-            Optional<TodoEntity> entities = service.updateTodo(entity);
+//            Optional<TodoEntity> entities = service.updateTodo(entity);
+            List<TodoEntity> entities = service.update(entity);
+
             List<TodoDTO> dtos = entities.stream().map(TodoDTO::new).collect(Collectors.toList());
 
             ResponseDTO<TodoDTO> response = ResponseDTO.<TodoDTO>builder().data(dtos).build();
